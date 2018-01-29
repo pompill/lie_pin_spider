@@ -7,9 +7,10 @@ import re
 # 第三方库
 import scrapy
 from scrapy.spiders import Spider
-import redis
+# import redis
 from lxml import etree
 from bs4 import BeautifulSoup as Bs
+from LiePin.utils import select_data
 
 # 项目内部库
 from LiePin.items import LiePinItem
@@ -27,13 +28,15 @@ class LiePinSpider(Spider):
                   '&siTag=k_cloHQj_hyIn0SLM9IfRg~fA9rXquZc5IkJpXC-Ycixw&d_headId=04c6a9eba2c03cc4717ec37b59061035'
                   '&d_ckId=04c6a9eba2c03cc4717ec37b59061035&d_sfrom=search_prime&d_curPage=0']
     extra = '&curPage={}'
-    r = redis.Redis(host='localhost', port=6379, db=0)
+    # r = redis.Redis(host='localhost', port=6379, db=0)
     http_header = 'https://www.liepin.com'
 
     def start_requests(self):
-        while True:
-            area = self.r.spop('lie_pin_city_num').decode('utf-8')
-            yield scrapy.Request(self.start_urls[0].format(area), callback=self.get_info_url, meta={'area': area})
+            data = select_data.parse()
+            for i in data:
+                # area = self.r.spop('lie_pin_city_num').decode('utf-8')
+                area = i['city']
+                yield scrapy.Request(self.start_urls[0].format(area), callback=self.get_info_url, meta={'area': area})
 
     @staticmethod
     def get_max_page(response):
