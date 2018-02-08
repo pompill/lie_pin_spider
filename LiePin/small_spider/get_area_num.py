@@ -5,11 +5,16 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup as bs
 import time
-import redis
+import pymongo
 
 browser = webdriver.Chrome(executable_path='C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe')
 wait = WebDriverWait(browser, 10)
-r = redis.Redis(host='localhost',port=6379,db=0)
+client = pymongo.MongoClient(host='120.79.162.44', port=10086)
+client.admin.authenticate("Leo", "fwwb123456")
+LiePin = client["fwwb"]
+LiePin_city = LiePin["LiePin_city"]
+
+
 def search():
     try:
         browser.get('https://www.liepin.com/zhaopin/?d_sfrom=search_fp_nvbar&init=1')
@@ -35,6 +40,9 @@ def get_area_num():
     city_total = soup.select('ul[class="clearfix"] li a')
     for n in city_total:
         city = n.get('data-code')
-        r.sadd('lie_pin_city_num',city)
+        if city != None:
+            data = {'city': city}
+            LiePin_city.insert(data)
+
 if __name__=="__main__":
     search()

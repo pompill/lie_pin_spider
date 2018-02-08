@@ -75,9 +75,12 @@ class LiePinSpider(Spider):
                     yield scrapy.Request(curl, callback=self.get_info, meta={'work_info_url': curl})
             if selector.xpath('//div[@class="pagerbar"]/a[@class="last"]/@href'):
                 max_page = self.get_max_page(response)
-                for p in range(1, int(max_page)+1):
-                    url = self.start_urls[0].format(area) + self.extra.format(p)
-                    yield scrapy.Request(url, callback=self.get_formal_url)
+                if max_page != None:
+                    for p in range(1, int(max_page)+1):
+                        url = self.start_urls[0].format(area) + self.extra.format(p)
+                        yield scrapy.Request(url, callback=self.get_formal_url)
+                else:
+                    pass
         else:
             pass
 
@@ -107,8 +110,8 @@ class LiePinSpider(Spider):
             min_salary = changeK.change_to_k(int(salary[0])*10000)
             max_salary = changeK.change_to_k(int(salary[1])*10000)
         else:
-            min_salary = salary[0]
-            max_salary = salary[0]
+            min_salary = re.sub('\s+', '', salary[0]).strip()
+            max_salary = re.sub('\s+', '', salary[0]).strip()
         h = re.sub('\r\n\s+', '', str(command))
         if re.findall('岗位职责(.*?)任职资格', str(h)):
             try:
