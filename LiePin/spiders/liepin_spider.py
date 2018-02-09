@@ -7,7 +7,6 @@ import re
 # 第三方库
 import scrapy
 from scrapy.spiders import Spider
-# import redis
 from lxml import etree
 from bs4 import BeautifulSoup as Bs
 from LiePin.utils import select_data
@@ -28,13 +27,11 @@ class LiePinSpider(Spider):
                   '&siTag=k_cloHQj_hyIn0SLM9IfRg~fA9rXquZc5IkJpXC-Ycixw&d_headId=04c6a9eba2c03cc4717ec37b59061035'
                   '&d_ckId=04c6a9eba2c03cc4717ec37b59061035&d_sfrom=search_prime&d_curPage=0']
     extra = '&curPage={}'
-    # r = redis.Redis(host='localhost', port=6379, db=0)
     http_header = 'https://www.liepin.com'
 
     def start_requests(self):
             data = select_data.parse()
             for i in data:
-                # area = self.r.spop('lie_pin_city_num').decode('utf-8')
                 area = i['city']
                 yield scrapy.Request(self.start_urls[0].format(area), callback=self.get_info_url, meta={'area': area})
 
@@ -147,16 +144,10 @@ class LiePinSpider(Spider):
         else:
             limit_degree = '无'
             work_experience = '无'
-        if selector.xpath('//div[@class="content"]/ul/li[1]/label'):
-            career_type = selector.xpath('string(//div[@class="content"]/ul/li[1]/label)')
-        elif selector.xpath('//div[@class="content content-word"]'):
-            try:
-                career_type = selector.xpath('//div[@class="content content-word"]/ul/li[1]/@title')[0]
-            except Exception as err:
-                print(err)
-                career_type = '无'
+        if selector.xpath('//div[@class="title-info"]/h1'):
+            career_type = selector.xpath('string(//div[@class="title-info"]/h1)').replace('\d+', '')
         else:
-            career_type = '无'
+            career_type = ''
         if selector.xpath('//ul[@class="new-compintro"]'):
             business_count = selector.xpath('string(//ul[@class="new-compintro"]/li[2])')[5:]
         elif selector.xpath('//div[@class="content content-word"]'):
