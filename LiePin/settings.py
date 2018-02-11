@@ -19,10 +19,10 @@ DEFAULT_REQUEST_HEADERS = {
 SPIDER_MODULES = ['LiePin.spiders']
 NEWSPIDER_MODULE = 'LiePin.spiders'
 
-MONGO_HOST = "120.79.162.44"  # 主机IP
-MONGO_PORT = 10086  # 端口号
-MONGO_DB = "fwwb"  # 库名
-MONGO_COLL = "LiePinData"  # collection名
+MONGO_HOST = "120.79.162.44"
+MONGO_PORT = 10086
+MONGO_DB = "fwwb"
+MONGO_COLL = "LiePinData"
 MONGO_USER = "Leo"
 MONGO_PSW = "fwwb123456"
 
