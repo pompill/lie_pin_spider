@@ -11,6 +11,7 @@ from scrapy.item import Item, Field
 class LiePinItem(Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
+    _id = Field()
     from_website = Field()
     min_salary = Field()
     max_salary = Field()

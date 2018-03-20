@@ -10,6 +10,7 @@ from scrapy.spiders import Spider
 from lxml import etree
 from bs4 import BeautifulSoup as Bs
 from LiePin.utils import select_data
+import hashlib
 
 # 项目内部库
 from LiePin.items import LiePinItem
@@ -46,6 +47,7 @@ class LiePinSpider(Spider):
         except Exception as err:
             print(err)
             pass
+
     def get_info_url(self, response):
         area = response.meta['area']
         html = response.body
@@ -181,6 +183,8 @@ class LiePinSpider(Spider):
             business_website = ''
             pass
         publish_date = changeMs.change_ms(date)
+        string = career_type + business_name
+        item['_id'] = hashlib.md5(string.encode('utf-8')).hexdigest()
         item['from_website'] = '猎聘'
         item['min_salary'] = min_salary
         item['max_salary'] = max_salary

@@ -9,8 +9,8 @@ import pymongo
 
 browser = webdriver.Chrome(executable_path='C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe')
 wait = WebDriverWait(browser, 10)
-client = pymongo.MongoClient(host='120.79.162.44', port=10086)
-client.admin.authenticate("Leo", "fwwb123456")
+client = pymongo.MongoClient(host='localhost', port=27017)
+client.admin.authenticate("", "")
 LiePin = client["fwwb"]
 LiePin_city = LiePin["LiePin_city"]
 
