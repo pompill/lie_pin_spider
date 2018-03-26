@@ -42,7 +42,7 @@ class LiePinSpider(Spider):
             html = response.html
             selector = etree.HTML(html)
             max_page_href = selector.xpath('//div[@class="pagerbar"]/a[@class="last]/@href')
-            max_page = re.search('curPage=(\d+)', max_page_href).group(0)
+            max_page = re.findall('&curPage=(\d+)', max_page_href)[0]
             return max_page
         except Exception as err:
             print(err)
@@ -74,7 +74,7 @@ class LiePinSpider(Spider):
                     yield scrapy.Request(curl, callback=self.get_info, meta={'work_info_url': curl})
             if selector.xpath('//div[@class="pagerbar"]/a[@class="last"]/@href'):
                 max_page = self.get_max_page(response)
-                if max_page != None:
+                if max_page is not None:
                     for p in range(1, int(max_page)+1):
                         url = self.start_urls[0].format(area) + self.extra.format(p)
                         yield scrapy.Request(url, callback=self.get_formal_url)
